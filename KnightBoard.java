@@ -38,6 +38,13 @@ public class KnightBoard {
    * @throws IllegalArgumentException when either parameter is negative or out of bounds.
    */
   public boolean solve(int startingRow, int startingCol) {
+    for (int row = 0; row < board.length; row++) {
+      for (int col = 0; col < board[row].length; col++) {
+        if (board[row][col] != 0) {
+          throw new IllegalStateException("The board contains non-zero values");
+        }
+      }
+    }
     if (startingCol < 0 || startingRow < 0) {
       throw new IllegalArgumentException("Parameter(s) cannot be nagative");
     }
@@ -50,6 +57,13 @@ public class KnightBoard {
    * @throws IllegalArgumentException when either parameter is negative or out of bounds.
   */
   public int countSolutions(int startingRow, int startingCol) {
+    for (int row = 0; row < board.length; row++) {
+      for (int col = 0; col < board[row].length; col++) {
+        if (board[row][col] != 0) {
+          throw new IllegalStateException("The board contains non-zero values");
+        }
+      }
+    }
     if (startingCol < 0 || startingRow < 0) {
       throw new IllegalArgumentException("Parameter(s) cannot be nagative");
     }
