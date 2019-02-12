@@ -38,13 +38,23 @@ public class KnightBoard {
    * @throws IllegalArgumentException when either parameter is negative or out of bounds.
    */
   public boolean solve(int startingRow, int startingCol) {
-
+    if (startingCol < 0 || startingRow < 0) {
+      throw new IllegalArgumentException("Parameter(s) cannot be nagative");
+    }
+    if (startingRow > board.length-1 || startingCol > board[0].length-1){
+      throw new IllegalArgumentException("Parameter(s) exceed array length");
+    }
   }
   /**
    * @throws IllegalStateException when the board contains non-zero values.
    * @throws IllegalArgumentException when either parameter is negative or out of bounds.
   */
   public int countSolutions(int startingRow, int startingCol) {
-
+    if (startingCol < 0 || startingRow < 0) {
+      throw new IllegalArgumentException("Parameter(s) cannot be nagative");
+    }
+    if (startingRow > board.length-1 || startingCol > board[0].length-1){
+      throw new IllegalArgumentException("Parameter(s) exceed array length");
+    }
   }
 }
