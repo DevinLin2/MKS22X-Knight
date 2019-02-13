@@ -1,6 +1,12 @@
 public class KnightBoard {
   int[][] board;
 
+  public static void main(String[] args) {
+    KnightBoard board = new KnightBoard(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
+    System.out.println(solve(0,0));
+    System.out.println(board);
+  }
+
   public KnightBoard(int startingRows,int startingCols) {
     board = new board[startingRows][startingCols];
     for (int row = 0; row < board.length; row++) {
@@ -60,10 +66,33 @@ public class KnightBoard {
     if (level == board.length * board[0].length) {
       return true;
     }
-    
+    board[row][col] = level;
+    /*
+    valid moves (xMove, yMove):
+    (2,1)
+    (2,-1)
+    (-2,1)
+    (-2,-1)
+    (-1,2)
+    (-1,-2)
+    (1,2)
+    (1,-2)
+    */
+    if ((validMove(row, col, 2, 1) && solveHelper(row+2, col+1)) ||
+        (validMove(row, col, 2, -1) && solveHelper(row+2, col-1)) ||
+        (validMove(row, col, -2, 1) && solveHelper(row-2, col+1)) ||
+        (validMove(row, col, -2, -1) && solveHelper(row-2, col-1)) ||
+        (validMove(row, col, -1, 2) && solveHelper(row-1, col+2)) ||
+        (validMove(row, col, -1, -2) && solveHelper(row-1, col-2)) ||
+        (validMove(row, col, 1, 2) && solveHelper(row+1, col+2)) ||
+        (validMove(row, col, 1, -2) && solveHelper(row+1, col-2)) ||) {
+      return true;
+    }
+    board[row][col] = 0;
+    return false;
   }
-  private boolean validMove(int knightX, int knightY, int xMove, int yMove) {
-    if (knightX + xMove < board[0].length && knightX + xMove > 0 && KnightY + yMove < board.length && knightY + yMove > 0) {
+  private boolean validMove(int knightY, int knightX, int xMove, int yMove) {
+    if (board[knightY+yMove][knightX+xMove] != 0 && knightX + xMove < board[0].length && knightX + xMove > 0 && KnightY + yMove < board.length && knightY + yMove > 0) {
       return true;
     }
   }
