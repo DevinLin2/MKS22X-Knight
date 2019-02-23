@@ -1,14 +1,17 @@
+import java.util.Arrays;
+
 public class KnightBoard {
+
   int[][] board;
 
   public static void main(String[] args) {
     KnightBoard board = new KnightBoard(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
-    System.out.println(solve(0,0));
+    System.out.println(board.solve(0,0));
     System.out.println(board);
   }
 
   public KnightBoard(int startingRows,int startingCols) {
-    board = new board[startingRows][startingCols];
+    board = new int[startingRows][startingCols];
     for (int row = 0; row < board.length; row++) {
       for (int col = 0; col < board[row].length; col++) {
         board[row][col] = 0;
@@ -60,41 +63,23 @@ public class KnightBoard {
     if (startingRow > board.length-1 || startingCol > board[0].length-1){
       throw new IllegalArgumentException("Parameter(s) exceed array length");
     }
-    return solveHelper(startingRow, startingCol, 0);
+    return solveHelper(startingRow, startingCol, 1);
   }
   private boolean solveHelper(int row, int col, int level) {
+    int[] moves = new int[] {2, 1, 2, -1, -2, 1, -2, -1, 1, 2, 1, -2, -1, 2, -1, -2};
     if (level == board.length * board[0].length) {
       return true;
     }
-    board[row][col] = level;
-    /*
-    valid moves (xMove, yMove):
-    (2,1)
-    (2,-1)
-    (-2,1)
-    (-2,-1)
-    (-1,2)
-    (-1,-2)
-    (1,2)
-    (1,-2)
-    */
-    if ((validMove(row, col, 2, 1) && solveHelper(row+2, col+1)) ||
-        (validMove(row, col, 2, -1) && solveHelper(row+2, col-1)) ||
-        (validMove(row, col, -2, 1) && solveHelper(row-2, col+1)) ||
-        (validMove(row, col, -2, -1) && solveHelper(row-2, col-1)) ||
-        (validMove(row, col, -1, 2) && solveHelper(row-1, col+2)) ||
-        (validMove(row, col, -1, -2) && solveHelper(row-1, col-2)) ||
-        (validMove(row, col, 1, 2) && solveHelper(row+1, col+2)) ||
-        (validMove(row, col, 1, -2) && solveHelper(row+1, col-2)) ||) {
-      return true;
+    if (row < board.length && row >= 0 && col < board[0].length && col >= 0 && board[row][col] == 0) {
+      board[row][col] = level;
+      for (int i = 0; i < moves.length; i += 2) {
+        if (solveHelper(moves[i], moves[i+1], level++)) {
+          return true;
+        }
+        board[row][col] = 0;
+      }
     }
-    board[row][col] = 0;
     return false;
-  }
-  private boolean validMove(int knightY, int knightX, int xMove, int yMove) {
-    if (board[knightY+yMove][knightX+xMove] != 0 && knightX + xMove < board[0].length && knightX + xMove > 0 && KnightY + yMove < board.length && knightY + yMove > 0) {
-      return true;
-    }
   }
   /**
    * Attempts to count all the solutions of the Knights Tour given the starting row and col
@@ -117,5 +102,6 @@ public class KnightBoard {
     if (startingRow > board.length-1 || startingCol > board[0].length-1){
       throw new IllegalArgumentException("Parameter(s) exceed array length");
     }
+    return 0;
   }
 }
