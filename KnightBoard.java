@@ -114,6 +114,21 @@ public class KnightBoard {
     if (startingRow > board.length-1 || startingCol > board[0].length-1){
       throw new IllegalArgumentException("Parameter(s) exceed array length");
     }
-    return 0;
+    return countSolutionsHelper(startingRow, startingCol, 1);
+  }
+  public int countSolutionsHelper(int row, int col, int level) {
+    int[] moves = new int[] {2, 1, 2, -1, -2, 1, -2, -1, 1, 2, 1, -2, -1, 2, -1, -2};
+    int ans = 0;
+    if (level == board.length * board[0].length + 1) {
+      return 1;
+    }
+    for (int i = 0; i < moves.length; i += 2) {
+      if (addKnight(row, col, level)) {
+        return ans += countSolutionsHelper(row + moves[i], col + moves[i+1], level + 1);
+      } else {
+        removeKnight(row, col, level);
+      }
+    }
+    return ans;
   }
 }
