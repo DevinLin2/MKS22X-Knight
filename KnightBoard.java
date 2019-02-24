@@ -65,18 +65,30 @@ public class KnightBoard {
     }
     return solveHelper(startingRow, startingCol, 1);
   }
-  private boolean solveHelper(int row, int col, int level) {
-    int[] moves = new int[] {2, 1, 2, -1, -2, 1, -2, -1, 1, 2, 1, -2, -1, 2, -1, -2};
-    if (level == board.length * board[0].length) {
-      return true;
-    }
+  private boolean addKnight(int row, int col, int level) {
     if (row < board.length && row >= 0 && col < board[0].length && col >= 0 && board[row][col] == 0) {
       board[row][col] = level;
-      for (int i = 0; i < moves.length; i += 2) {
-        if (solveHelper(moves[i], moves[i+1], level++)) {
-          return true;
-        }
-        board[row][col] = 0;
+      return true;
+    }
+    return false;
+  }
+  private boolean removeKnight(int row, int col, int level) {
+    if (row < board.length && row >= 0 && col < board[0].length && col >= 0 && board[row][col] == level) {
+      board[row][col] = 0;
+      return true;
+    }
+    return false;
+  }
+  private boolean solveHelper(int row, int col, int level) {
+    int[] moves = new int[] {2, 1, 2, -1, -2, 1, -2, -1, 1, 2, 1, -2, -1, 2, -1, -2};
+    if (level == board.length * board[0].length + 1) {
+      return true;
+    }
+    for (int i = 0; i < moves.length; i += 2) {
+      if (addKnight(row, col, level) && solveHelper(row + moves[i], col + moves[i+1], level + 1)) {
+        return true;
+      } else {
+        removeKnight(row, col, level);
       }
     }
     return false;
