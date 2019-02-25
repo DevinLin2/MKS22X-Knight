@@ -120,23 +120,18 @@ public class KnightBoard {
   public int countSolutionsHelper(int r, int c, int level) {
     int[] moves = new int[] {2, 1, 2, -1, -2, 1, -2, -1, 1, 2, 1, -2, -1, 2, -1, -2};
     int ans = 0;
-    if (level == board.length * board[0].length + 1) {
+    if (level == board.length * board[0].length) {
       return 1;
     }
-    for (int row = 0; row < board.length; row++) {
-      for (int col = 0; col < board[row].length; col++) {
-        if (level == 1) {
-          addKnight(row, col, level);
-        }
-        for (int i = 0; i < moves.length; i += 2) {
-          if (addKnight(row + moves[i], col + moves[i+1], level + 1)) {
-            return ans += countSolutionsHelper(row + moves[i], col + moves[i+1], level + 1);
-          } else {
-            removeKnight(row + moves[i], col + moves[i+1], level + 1);
-          }
-        }
+    addKnight(r, c, level);
+    for (int moveIndex = 0; moveIndex < moves.length; moveIndex += 2) {
+      if (r + moves[moveIndex] < board.length && r + moves[moveIndex] >= 0 &&
+          c + moves[moveIndex + 1] < board[0].length && c + moves[moveIndex + 1] >= 0 &&
+          board[r + moves[moveIndex]][c + moves[moveIndex + 1]] == 0) {
+        ans += countSolutionsHelper(r + moves[moveIndex], c + moves[moveIndex+1], level + 1);
       }
     }
+    removeKnight(r, c, level);
     return ans;
   }
   public static void runTest(int i){
