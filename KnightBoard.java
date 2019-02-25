@@ -6,7 +6,8 @@ public class KnightBoard {
 
   public static void main(String[] args) {
     KnightBoard board = new KnightBoard(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
-    System.out.println(board.solve(0,0));
+    System.out.println(board.countSolutions(0,0));
+    //System.out.println(board.solve(0,0));
     System.out.println(board);
   }
 
@@ -116,19 +117,48 @@ public class KnightBoard {
     }
     return countSolutionsHelper(startingRow, startingCol, 1);
   }
-  public int countSolutionsHelper(int row, int col, int level) {
+  public int countSolutionsHelper(int r, int c, int level) {
     int[] moves = new int[] {2, 1, 2, -1, -2, 1, -2, -1, 1, 2, 1, -2, -1, 2, -1, -2};
     int ans = 0;
     if (level == board.length * board[0].length + 1) {
       return 1;
     }
-    for (int i = 0; i < moves.length; i += 2) {
-      if (addKnight(row, col, level)) {
-        return ans += countSolutionsHelper(row + moves[i], col + moves[i+1], level + 1);
-      } else {
-        removeKnight(row, col, level);
+    for (int row = 0; row < board.length; row++) {
+      for (int col = 0; col < board[row].length; col++) {
+        if (level == 1) {
+          addKnight(row, col, level);
+        }
+        for (int i = 0; i < moves.length; i += 2) {
+          if (addKnight(row + moves[i], col + moves[i+1], level + 1)) {
+            return ans += countSolutionsHelper(row + moves[i], col + moves[i+1], level + 1);
+          } else {
+            removeKnight(row + moves[i], col + moves[i+1], level + 1);
+          }
+        }
       }
     }
     return ans;
+  }
+  public static void runTest(int i){
+    KnightBoard b;
+    int[]m =   {4,5,5,5,5};
+    int[]n =   {4,5,4,5,5};
+    int[]startx = {0,0,0,1,2};
+    int[]starty = {0,0,0,1,2};
+    int[]answers = {0,304,32,56,64};
+    if(i >= 0 ){
+      try{
+        int correct = answers[i];
+        b = new KnightBoard(m[i%m.length],n[i%m.length]);
+        int ans  = b.countSolutions(startx[i],starty[i]);
+        if(correct==ans){
+          System.out.println("PASS board size: "+m[i%m.length]+"x"+n[i%m.length]+" "+ans);
+        }else{
+          System.out.println("FAIL board size: "+m[i%m.length]+"x"+n[i%m.length]+" "+ans+" vs "+correct);
+        }
+      }catch(Exception e){
+        System.out.println("FAIL Exception case: "+i);
+      }
+    }
   }
 }
