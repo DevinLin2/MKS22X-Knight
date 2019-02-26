@@ -3,12 +3,16 @@ import java.util.Arrays;
 public class KnightBoard {
 
   int[][] board;
+  int[][] outgoingMoves;
 
   public static void main(String[] args) {
-    KnightBoard board = new KnightBoard(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
-    System.out.println(board.countSolutions(0,0));
-    //System.out.println(board.solve(0,0));
+    KnightBoard board = new KnightBoard(6, 8);
     System.out.println(board);
+    // runTest(0);
+    // runTest(1);
+    // runTest(2);
+    // runTest(3);
+    // runTest(4);
   }
 
   public KnightBoard(int startingRows,int startingCols) {
@@ -16,6 +20,21 @@ public class KnightBoard {
     for (int row = 0; row < board.length; row++) {
       for (int col = 0; col < board[row].length; col++) {
         board[row][col] = 0;
+      }
+    }
+    // initiates the board of possible moves to that space
+    int[] moves = new int[] {2, 1, 2, -1, -2, 1, -2, -1, 1, 2, 1, -2, -1, 2, -1, -2};
+    outgoingMoves = new int[startingRows][startingCols];
+    int possibleMoves = 0;
+    for (int row = 0; row < board.length; row++) {
+      for (int col = 0; col < board[row].length; col++) {
+        for (int move = 0; move < moves.length; move += 2) { // loops through the possible moves to testhow many moves can go to this spot
+          if (row + moves[move] < board.length && row + moves[move] >= 0 && col + moves[move + 1] < board[0].length && col + moves[move + 1] >= 0) {
+            possibleMoves++;
+          }
+        }
+        outgoingMoves[row][col] = possibleMoves;
+        possibleMoves = 0;
       }
     }
   }
@@ -41,6 +60,28 @@ public class KnightBoard {
         ans += "\n";
       }
     }
+    ans += "-----------------------------------------------------\n";
+    // this prints out the possible outgoing moves from each space
+    if (outgoingMoves.length * outgoingMoves[0].length < 10) {
+      for (int row = 0; row < outgoingMoves.length; row++) {
+        for (int col = 0; col < outgoingMoves[row].length; col++) {
+          ans += outgoingMoves[row][col] + " ";
+        }
+        ans += "\n";
+      }
+    } else {
+      for (int row = 0; row < outgoingMoves.length; row++) {
+        for (int col = 0; col < outgoingMoves[row].length; col++) {
+          if (outgoingMoves[row][col] < 10) {
+            ans += " " + outgoingMoves[row][col] + " ";
+          } else {
+            ans += outgoingMoves[row][col] + " ";
+          }
+        }
+        ans += "\n";
+      }
+    }
+
     return ans;
   }
   /**
