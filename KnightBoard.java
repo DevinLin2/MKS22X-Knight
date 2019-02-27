@@ -1,4 +1,6 @@
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class KnightBoard {
 
@@ -7,14 +9,7 @@ public class KnightBoard {
 
   public static void main(String[] args) {
     KnightBoard board = new KnightBoard(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
-    System.out.println(board);
-    board.addKnight(0,0,1);
-    System.out.println(board);
-    board.addKnight(2,1,2);
-    System.out.println(board);
-    board.removeKnight(2,1,2);
-    System.out.println(board);
-    board.removeKnight(0,0,1);
+    board.solve(0,0);
     System.out.println(board);
     // runTest(0);
     // runTest(1);
@@ -114,7 +109,7 @@ public class KnightBoard {
     if (startingRow > board.length-1 || startingCol > board[0].length-1){
       throw new IllegalArgumentException("Parameter(s) exceed array length");
     }
-    return solveHelper(startingRow, startingCol, 1);
+    return optimizedSolveHelper(startingRow, startingCol, 1);
   }
   private boolean addKnight(int row, int col, int level) {
     int[] moves = new int[] {2, 1, 2, -1, -2, 1, -2, -1, 1, 2, 1, -2, -1, 2, -1, -2};
@@ -150,6 +145,64 @@ public class KnightBoard {
     for (int i = 0; i < moves.length; i += 2) {
       if (addKnight(row, col, level) && solveHelper(row + moves[i], col + moves[i+1], level + 1)) {
         return true;
+      } else {
+        removeKnight(row, col, level);
+      }
+    }
+    return false;
+  }
+
+  // optimized solve using Warnsdorff's algorithm
+  private boolean optimizedSolveHelper(int row, int col, int level) {
+    int[] moves = new int[] {2, 1, 2, -1, -2, 1, -2, -1, 1, 2, 1, -2, -1, 2, -1, -2};
+    ArrayList<Integer> outgoingM = new ArrayList<Integer>();
+    int lowest = 0;
+    int index = 0;
+    int x = 0;
+    int y = 0;
+
+    if (level == board.length * board[0].length + 1) {
+      return true;
+    }
+    for (int i = 0; i < moves.length; i += 2) {
+      if (addKnight(row, col, level)) {
+        for (int moveIndex = 0; moveIndex < moves.length; moveIndex += 2) {
+          if (row + moves[moveIndex] < board.length && row + moves[moveIndex] >= 0 && col + moves[moveIndex + 1] < board[0].length && col + moves[moveIndex + 1] >= 0 &&
+          outgoingMoves[row + moves[moveIndex]][col + moves[moveIndex + 1]] != 0 && board[row + moves[moveIndex]][col + moves[moveIndex + 1]] == 0) {
+            outgoingM.add(outgoingMoves[row + moves[moveIndex]][col + moves[moveIndex + 1]]); // adds all the possible outgoing moves from each possible move to an ArrayList
+          }
+        }
+        if (outgoingM.size() > 0) {
+          Collections.sort(outgoingM);
+          while (lowest == 0) { // gets the lowest value in ArrayList of possible outgoing moves
+            lowest = outgoingM.get(index);
+            index++;
+          }
+          index--;
+          //System.out.println("lowest1: " + lowest);
+          index = 0; // resets index
+          // now we have the lowest possible outgoing moves
+          for (int moveIndex = 0; moveIndex < moves.length; moveIndex += 2) {
+            if (row + moves[moveIndex] < board.length && row + moves[moveIndex] >= 0 && col + moves[moveIndex + 1] < board[0].length && col + moves[moveIndex + 1] >= 0 &&
+            // checks for the x and y value of the place with the lowest outgoing moves and checks that it hasent been stepped on yet
+            outgoingMoves[row + moves[moveIndex]][col + moves[moveIndex + 1]] == lowest && board[row + moves[moveIndex]][col + moves[moveIndex + 1]] == 0) {
+              y = row + moves[moveIndex];
+              x = col + moves[moveIndex + 1];
+            }
+          }
+          outgoingM.clear();
+        } else {
+          for (int z = 0; z < moves.length; z += 2) {
+            if (addKnight(row, col, level) && solveHelper(row + moves[z], col + moves[z+1], level + 1)) {
+              return true;
+            } else {
+              removeKnight(row, col, level);
+            }
+          }
+        }
+        if (optimizedSolveHelper(y, x, level + 1)) {
+          return true;
+        }
       } else {
         removeKnight(row, col, level);
       }
