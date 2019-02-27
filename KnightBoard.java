@@ -12,6 +12,10 @@ public class KnightBoard {
     System.out.println(board);
     board.addKnight(2,1,2);
     System.out.println(board);
+    board.removeKnight(2,1,2);
+    System.out.println(board);
+    board.removeKnight(0,0,1);
+    System.out.println(board);
     // runTest(0);
     // runTest(1);
     // runTest(2);
@@ -129,6 +133,11 @@ public class KnightBoard {
     int[] moves = new int[] {2, 1, 2, -1, -2, 1, -2, -1, 1, 2, 1, -2, -1, 2, -1, -2};
     if (row < board.length && row >= 0 && col < board[0].length && col >= 0 && board[row][col] == level) {
       board[row][col] = 0;
+      for (int moveIndex = 0; moveIndex < moves.length; moveIndex += 2) {
+        if (row + moves[moveIndex] < board.length && row + moves[moveIndex] >= 0 && col + moves[moveIndex + 1] < board[0].length && col + moves[moveIndex + 1] >= 0) {
+          outgoingMoves[row + moves[moveIndex]][col + moves[moveIndex + 1]] += 1;
+        }
+      }
       return true;
     }
     return false;
