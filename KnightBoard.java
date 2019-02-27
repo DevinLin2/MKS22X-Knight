@@ -6,7 +6,11 @@ public class KnightBoard {
   int[][] outgoingMoves;
 
   public static void main(String[] args) {
-    KnightBoard board = new KnightBoard(6, 8);
+    KnightBoard board = new KnightBoard(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
+    System.out.println(board);
+    board.addKnight(0,0,1);
+    System.out.println(board);
+    board.addKnight(2,1,2);
     System.out.println(board);
     // runTest(0);
     // runTest(1);
@@ -60,6 +64,7 @@ public class KnightBoard {
         ans += "\n";
       }
     }
+
     ans += "-----------------------------------------------------\n";
     // this prints out the possible outgoing moves from each space
     if (outgoingMoves.length * outgoingMoves[0].length < 10) {
@@ -108,13 +113,20 @@ public class KnightBoard {
     return solveHelper(startingRow, startingCol, 1);
   }
   private boolean addKnight(int row, int col, int level) {
+    int[] moves = new int[] {2, 1, 2, -1, -2, 1, -2, -1, 1, 2, 1, -2, -1, 2, -1, -2};
     if (row < board.length && row >= 0 && col < board[0].length && col >= 0 && board[row][col] == 0) {
       board[row][col] = level;
+      for (int moveIndex = 0; moveIndex < moves.length; moveIndex += 2) {
+        if (row + moves[moveIndex] < board.length && row + moves[moveIndex] >= 0 && col + moves[moveIndex + 1] < board[0].length && col + moves[moveIndex + 1] >= 0) {
+          outgoingMoves[row + moves[moveIndex]][col + moves[moveIndex + 1]] -= 1;
+        }
+      }
       return true;
     }
     return false;
   }
   private boolean removeKnight(int row, int col, int level) {
+    int[] moves = new int[] {2, 1, 2, -1, -2, 1, -2, -1, 1, 2, 1, -2, -1, 2, -1, -2};
     if (row < board.length && row >= 0 && col < board[0].length && col >= 0 && board[row][col] == level) {
       board[row][col] = 0;
       return true;
